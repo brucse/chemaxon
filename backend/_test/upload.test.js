@@ -4,7 +4,7 @@ describe('upload testing', () =>{
 
     test('successfull file uploading', (done) =>{
         request(app)
-        .post('/uploads')
+        .post('/upload')
         .type('form')
         .attach('userFile','././_test/test-image.png')
         .expect(200)

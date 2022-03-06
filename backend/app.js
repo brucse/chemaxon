@@ -3,10 +3,13 @@ const { errorHandler, ClientError } = require('./ErrorHandler')
 const express = require('express')
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
+const cors = require('cors')
+
 
 const app = express()
+app.use(cors())
 
-app.post('/uploads', upload.array('userFile'), function (req, res) {
+app.post('/upload', upload.array('userFile'), function (req, res) {
     const file = req.files
     if (!file || file.length === 0) {
         throw new ClientError('There is no file to upload')

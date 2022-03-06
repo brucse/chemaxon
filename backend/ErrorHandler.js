@@ -11,9 +11,9 @@ function errorHandler(err,req,res,next){
     //@todo: use real logger instead
     console.error(err)
     if(err instanceof ClientError){
-        res.status('404').send(err.message)
+        res.status('400').send(err.message)
     }else if(err instanceof multer.MulterError){
-        res.status('404').send('Technical error with upload')
+        res.status('400').send('Technical error with upload')
     }else{
         res.status('500').send()
     }

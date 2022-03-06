@@ -1,18 +1,17 @@
 const {sequelize}= require('./SequelizeInstance')
 const {DataTypes} = require("sequelize")
 
-const FileData = sequelize.define('FileData',{
+const User = sequelize.define('User',{
     id : {
         type:DataTypes.INTEGER,
         primaryKey : true 
     },
-    fileName: {type:DataTypes.STRING},
-    fileOriginalName: {type:DataTypes.STRING}
+    login : {type:DataTypes.STRING},
+    password : {type:DataTypes.STRING},
 }, 
 {
-    tableName : 'file_data',
+    tableName : 'user',
     timestamps : false
 })
 
-module.exports = FileData
-
+module.exports = User

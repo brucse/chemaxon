@@ -2,7 +2,12 @@ require('./settings')
 const { errorHandler, ClientError } = require('./ErrorHandler')
 const express = require('express')
 const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const multerStorage = require('./multerSetting')
+
+const upload = multer({storage : multerStorage})
+
+
+
 const cors = require('cors')
 
 const FileData = require('./models/FileData')
@@ -11,26 +16,56 @@ const FileData = require('./models/FileData')
 const app = express()
 app.use(cors())
 
-app.post('/upload', upload.array('userFile'), function (req, res) {
+app.post('/upload', upload.array('userFile'), function (req, res, next) {
     const file = req.files
     if (!file || file.length === 0) {
-        throw new ClientError('There is no file to upload')
+        next(new ClientError('There is no file to upload'))
     } else {
+        console.log('upload file names', file)
         const promises = []
         file.forEach(f => {
-            promises.push(FileData.create({ fileId: f.filename, fileName : f.originalname}))
+            promises.push(FileData.create({ fileName: f.filename, fileOriginalName: f.originalname }))
         })
-        
+
         Promise.all(promises)
-        .then((values) => {
-            res.status('200').send()
-        })
-        .catch(e => {
-            throw new Error('database error', e)
-        })
+            .then((values) => {
+                res.status('200').send()
+            })
+            .catch(e => {
+                next(new Error('database error', e))
+            })
     }
 })
 
+app.get('/files', function (req, res, next) {
+    console.log('dir', __dirname)
+    console.log('url', req.get('host'))
+    FileData.findAll().
+        then(data => {
+            console.log('data', data)
+            res.status('200').json({ data: data })
+        })
+        .catch(e => {
+            console.error(e)
+            next(new Error('Error in listing files', e))
+        })
+})
+
+function checkUser(req, res, next) {
+    console.log('checkuser')
+    // FileData.findAll({ where: { id: id } }).
+    //     then(data => {
+    //         console.log('data', data)
+    //         res.status('200').json({ data: data })
+    //     })
+    //     .catch(e => {
+    //         console.error(e)
+    //         next(new Error('Error in listing files', e))
+    //     })
+    next()
+}
+
+app.use('/file', checkUser, express.static('uploads'))
 app.use(errorHandler)
 
 const port = process.env.APP_PORT

@@ -1,32 +1,37 @@
 const request = require('supertest');
 const app = require('../app')
 const {sync} = require ('../models/synchronize')
+const FileData = require('../models/FileData')
 
-describe('upload testing', () =>{
+const testData = {fileId:'testId', fileName: 'test.png'}
+
+describe('file listing', () =>{
 
     beforeAll((done) =>{
     sync()
     .then(() => {
         console.log('db synchronized')
+        return FileData.create(testData)
+    })
+    .then(data =>{
         done()
-    }).catch((e) => {
+    })
+    .catch((e) => {
         console.error('db synchronization error', e)
         done(e)
     })
-    })
-    
+}) 
 
 
-    test('successfull file uploading', (done) =>{
+    test('list files', (done) =>{
         request(app)
-        .post('/upload')
-        .type('form')
-        .attach('userFile','././_test/test-image.png')
-        .attach('userFile','././_test/test-image2.png')
+        .get('/files')
         .expect(200)
         .end((err,res) =>{
             if (err) return (done(err))
-            //@todo check row created in db
+            console.log('res', res.body)
+            const {id,...received} = res.body.data[0]
+            expect(received).toEqual(testData)
             done()
         })
 

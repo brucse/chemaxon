@@ -106,3 +106,4 @@ dist
 
 
 backend/uploads/**
+backend/models/chemaxon-dev.db

@@ -120,11 +120,11 @@ export default  ({ setUploadStatus, setShowUpload, refreshGrid }) => {
 
         superagent
             .post(`${process.env.REACT_APP_REST_URL}/upload`)
-            .send(formData)
             .on('progress', event => {
                 console.log('progress upload', event.percent)
                 setProgress(event.percent)
             })
+            .send(formData)
             .then(res => {
                 console.log('res', res)
                 setUploadStatus({ status: 'success', message: 'Upload successfully finished' })

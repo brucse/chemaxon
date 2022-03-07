@@ -35,7 +35,7 @@ const FileNames = ({files}) => {
     ))
 }
 
-const UploadPanel = ({setUploadStatus,setShowUpload}) => {
+const UploadPanel = ({setUploadStatus,setShowUpload, refreshGrid}) => {
     const [selectStatus, setSelectStatus] = useState()
     const [files, setFiles] = useState()
     
@@ -74,9 +74,13 @@ const UploadPanel = ({setUploadStatus,setShowUpload}) => {
         superagent
             .post(`${process.env.REACT_APP_REST_URL}/upload`)
             .send(formData)
+            .on('progress', event => {
+                console.log('progress upload', event.percent)
+            })
             .then(res => {
                 console.log('res', res)
                 setUploadStatus({ status: 'success', message:'success' })
+                refreshGrid()
             })
             .catch(e => {
                 console.error('error', e)
@@ -106,7 +110,7 @@ const UploadPanel = ({setUploadStatus,setShowUpload}) => {
 
 }
 
-export default function Upload() {
+export default function Upload({refreshGrid}) {
 
     const [showUpload, setShowUpload] = useState(false)
     const [uploadStatus, setUploadStatus] = useState({status : 'default'})
@@ -125,7 +129,7 @@ export default function Upload() {
     return (
         <>
             {uploadStatus?.message}
-            {!showUpload ? <button onClick={newUploadHandleClick}>new upload</button> : <UploadPanel setShowUpload={setShowUpload} setUploadStatus={setUploadStatus} cancelHandleClick={cancelHandleClick}/>}
+            {!showUpload ? <button onClick={newUploadHandleClick}>new upload</button> : <UploadPanel setShowUpload={setShowUpload} setUploadStatus={setUploadStatus} refreshGrid={refreshGrid} />}
             {showUpload ? <input type='button' value='cancel' onClick={cancelHandleClick}/>:null }
         </>
     )

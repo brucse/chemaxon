@@ -1,5 +1,44 @@
 import react, { useState, useRef, useEffect } from 'react'
 import superagent from 'superagent'
+import './Upload.scss'
+import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
+import LinearProgress from '@mui/material/LinearProgress';
+
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        marginBottom: theme.spacing(3),
+    },
+    button: {
+        marginBottom: theme.spacing(2)
+    },
+    uploadButton: {
+        marginLeft: theme.spacing(1),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+    },
+    uploadText: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        border: 'solid',
+        borderWidth: '1px',
+        borderColor: theme.palette.primary.main,
+        padding: '1px'
+    },
+    fileList: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        padding: '1px',
+        width: 'fit-content',
+        listStyleType: 'none'
+    },
+    
+}));
 
 class UploadError extends Error {
     constructor(message) {
@@ -25,20 +64,28 @@ const checkFileSizes = (files) => {
     }
 }
 
-const FileNames = ({files}) => {
-    return files.map(file => (
-        <div style={{ border: 'solid' }}
-            key={file.name}>
-            {file.name}, {file.size}
-        </div>
-
-    ))
+const FileNames = ({ files, className }) => {
+    return (
+        <>
+        <div style={{fontWeight: '800'}}>Files to upload</div>
+        <ul className={className}>
+            {files.map(file => (
+                    <li style={{border: 'none'}} key={file.name}>
+                        <span style={{fontWeight: '600'}}>Name:</span> {file.name} <span style={{fontWeight: '600'}}>Size:</span> {file.size}
+                    </li>
+            ))}
+        </ul>
+        </>
+    )
 }
 
-const UploadPanel = ({setUploadStatus,setShowUpload, refreshGrid}) => {
+const UploadPanel = ({ setUploadStatus, setShowUpload, refreshGrid }) => {
     const [selectStatus, setSelectStatus] = useState()
     const [files, setFiles] = useState()
-    
+    const [progress, setProgress] = useState(0)
+
+    const classes = useStyles();
+
     const userFileHandleChange = (event) => {
         event.preventDefault()
         setSelectStatus(null)
@@ -76,15 +123,16 @@ const UploadPanel = ({setUploadStatus,setShowUpload, refreshGrid}) => {
             .send(formData)
             .on('progress', event => {
                 console.log('progress upload', event.percent)
+                setProgress(event.percent)
             })
             .then(res => {
                 console.log('res', res)
-                setUploadStatus({ status: 'success', message:'success' })
+                setUploadStatus({ status: 'success', message: 'Upload successfully finished' })
                 refreshGrid()
             })
             .catch(e => {
                 console.error('error', e)
-                setUploadStatus({ status: 'error' , message:'upload error'})
+                setUploadStatus({ status: 'error', message: 'upload error' })
             })
             .finally(() => {
                 setShowUpload(false)
@@ -96,24 +144,35 @@ const UploadPanel = ({setUploadStatus,setShowUpload, refreshGrid}) => {
 
     return (
         <>
-            {files ? <FileNames files={files} /> : null}
-            {selectStatus?.status === 'loading' ? 'loading' : null}
-            {selectStatus?.status === 'error' ? selectStatus.message : null}
-            <form>
-                <label htmlFor='file-upload'>Click here to select file(s). Maximum file size is 3GB. Maximum file number is 3</label>
-                <input id='file-upload' style={{ display: 'none' }} type='file' onChange={userFileHandleChange} name='userFile' multiple='multiple' />
-                <input data-testid="upload-button" type='button' value='upload' onClick={uploadHandleClick} />
-            </form>
-        </>
+            <Paper elevation={3} >
+                {files ? <FileNames files={files} className={classes.fileList} /> : null}
+                {selectStatus?.status === 'loading' ? <div style={{fontWeight:'500'}}>Upload in progress<LinearProgress variant='determinate' value={Math.round(progress)} /> </div> : null}
+                {selectStatus?.status === 'error' ? <Alert  severity='error'>{selectStatus.message}</Alert>  : null}
+                <div style={{ display: 'flex', allignItems: 'center' }}>
 
+                    <form>
+                        <Typography variant='button' className={classes.uploadText}>
+                            <label htmlFor='file-upload'>Click here to select file(s). Maximum file size is 3GB. Maximum file number is 3</label>
+                        </Typography>
+                        <input id='file-upload' style={{ display: 'none' }} type='file' onChange={userFileHandleChange} name='userFile' multiple='multiple' />
+                        <Button className={classes.uploadButton} variant="outlined" color="primary" data-testid="upload-button" onClick={uploadHandleClick} >upload</Button>
+                    </form>
+                </div>
+            </Paper>
+
+        </>
     )
 
 }
 
-export default function Upload({refreshGrid}) {
+
+
+export default function Upload({ refreshGrid }) {
 
     const [showUpload, setShowUpload] = useState(false)
-    const [uploadStatus, setUploadStatus] = useState({status : 'default'})
+    const [uploadStatus, setUploadStatus] = useState({ status: 'default' })
+
+    const classes = useStyles();
 
 
     const cancelHandleClick = () => {
@@ -125,13 +184,29 @@ export default function Upload({refreshGrid}) {
         setUploadStatus(null)
     }
 
+    const createMessage = (uploadStatus) =>{
+        let ret = null
+        if(uploadStatus){
+            switch(uploadStatus.status){
+               case 'success':
+               ret = <Alert severity='info'>{uploadStatus?.message}</Alert>
+                   break
+                case 'error':
+               ret = <Alert severity='error'>{uploadStatus?.message}</Alert>
+                break
+            }
+        }
+        
+        return ret 
+    }
 
     return (
-        <>
-            {uploadStatus?.message}
-            {!showUpload ? <button onClick={newUploadHandleClick}>new upload</button> : <UploadPanel setShowUpload={setShowUpload} setUploadStatus={setUploadStatus} refreshGrid={refreshGrid} />}
-            {showUpload ? <input type='button' value='cancel' onClick={cancelHandleClick}/>:null }
-        </>
+        <section className={classes.root}>
+            {showUpload ? <Button className={classes.button} variant="outlined" color="primary" onClick={cancelHandleClick} >cancel upload</Button> : null}
+            {/* {uploadStatus?.message ?<Alert severity='info'>{uploadStatus?.message}</Alert>:null} */}
+            {createMessage(uploadStatus)}
+            {!showUpload ? <Button className={classes.button} variant="outlined" color="primary" onClick={newUploadHandleClick}>new upload</Button> : <UploadPanel setShowUpload={setShowUpload} setUploadStatus={setUploadStatus} refreshGrid={refreshGrid} />}
+        </section>
     )
 }
 

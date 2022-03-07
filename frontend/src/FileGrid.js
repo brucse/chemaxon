@@ -1,8 +1,12 @@
 import react, { useState, useRef, useEffect } from 'react'
 import MUIDataTable from "mui-datatables";
 import superagent, { options } from 'superagent'
+import LinearProgress from '@mui/material/LinearProgress';
 
 const FileGrid = ({ gridData }) => {
+
+    const [downloading,setDownloading] = useState(false)
+    const [progress, setProgress] = useState(0)
 
     const downloadUrl = `${process.env.REACT_APP_REST_URL}/file`
 
@@ -13,6 +17,9 @@ const FileGrid = ({ gridData }) => {
             .get(`${process.env.REACT_APP_REST_URL}/file/${fileStoreName}`)
             .on('progress', event => {
                 console.log('progress', event.percent)
+                setDownloading(true)
+                setProgress(event.percent)
+                
             })
             .then(res => {
                 let blob = new Blob([res.text]);
@@ -28,6 +35,9 @@ const FileGrid = ({ gridData }) => {
             .catch(e => {
                 console.error('error', e)
             })
+            .finally(() =>{
+                setDownloading(false)
+            })
     }
 
     const columns = [
@@ -35,7 +45,7 @@ const FileGrid = ({ gridData }) => {
             name: '' //id
         },
         {
-            name: 'Download link',
+            name: 'File',
             options: {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const fileStoreName = value
@@ -54,9 +64,12 @@ const FileGrid = ({ gridData }) => {
         }
         ];
 
+    
+
     return (
         <>
-            {!gridData ? <div>loading</div> :
+            {downloading? <div><span style={{fontWeight: '500'}}>Download in progress</span><LinearProgress variant='determinate' value={progress}/></div> :null}
+            {!gridData ? <LinearProgress/> :
                 <MUIDataTable
                     title={"Files"}
                     data={gridData}

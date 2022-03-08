@@ -28,6 +28,8 @@ const AuthenticationProvider = ({children}) =>{
     
     const signOut = ()=>{
         setId(null)
+        setLogin(null)
+        setMessage(null)
     }
 
     let userId = id

@@ -12,10 +12,13 @@ export default  ()=>{
    return(
       <header>
       <div>
+      {context.userId?(
       <div className={styles.userInfo}>
         <div className={styles.loggedIn}><strong>{context.login}</strong> user is logged in</div>
        <Button style={{margin: '0'}} onClick={handleLogoutClick}  variant="outlined" color="primary" >logout</Button>
       </div>
+
+      ):null}
 
       </div>
       </header>

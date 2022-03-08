@@ -1,6 +1,9 @@
 import {AuthContext} from './contexts'
-import {useState,useContext} from 'react'
+import {useState,useContext, useEffect} from 'react'
 import styles from './Login.module.scss'
+import TextField from '@mui/material/TextField';
+import Button from '@material-ui/core/Button'
+import Alert from '@material-ui/lab/Alert';
 
 
 const Login = () => {
@@ -24,11 +27,10 @@ const handleSignInClick = (event) =>{
 
  return (
   <section className={styles.login}>
-        {message?<p>{message}</p>:null}
-        <input onChange={handleLogin} type='text' value={login}/>
-        <input onChange={handlePassword} type='text' value={password}/>
-        <button onClick={handleSignInClick}>sign in</button>
-        <button>cancel</button>
+        {message?<Alert  severity='error'>{message}</Alert>  : null}
+        <TextField size='small' className={styles.loginField} onChange={handleLogin} label="login" variant="outlined" />
+        <TextField type='password' size='small' className={styles.passwordField} onChange={handlePassword}  label="password" variant="outlined" />
+        <Button variant="outlined" color="primary" style={{marginTop: '3rem'}} onClick={handleSignInClick}>sign in</Button>
   </section>
   ) 
   

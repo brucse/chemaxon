@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@mui/material/LinearProgress';
 import { AuthContext } from './contexts'
-
+import prettyBytes from 'pretty-bytes';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,10 +25,11 @@ const useStyles = makeStyles((theme) => ({
     uploadText: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
-        border: 'solid',
-        borderWidth: '1px',
-        borderColor: theme.palette.primary.main,
-        padding: '1px'
+        // border: 'solid',
+        // borderWidth: '1px',
+        // borderColor: theme.palette.primary.main,
+        padding: '3px',
+        // boxSizing: 'border-box'
     },
     fileList: {
         marginTop: theme.spacing(1),
@@ -66,7 +67,7 @@ const FileNames = ({ files, className }) => {
         <ul className={className}>
             {files.map(file => (
                     <li style={{border: 'none'}} key={file.name}>
-                        <span style={{fontWeight: '600'}}>Name:</span> {file.name} <span style={{fontWeight: '600'}}>Size:</span> {file.size}
+                        <span style={{fontWeight: '600'}}>Name:</span> {file.name} <span style={{fontWeight: '600'}}>Size:</span> {prettyBytes(file.size)} 
                     </li>
             ))}
         </ul>
@@ -152,10 +153,10 @@ export default  ({ setUploadStatus, setShowUpload, refreshGrid }) => {
 
                     <form>
                         <Typography variant='button' className={classes.uploadText}>
-                            <label htmlFor='file-upload'>Click here to select file(s). Maximum file size is 3GB. Maximum file number is 3</label>
+                            <label style={{cursor: 'pointer'}} htmlFor='file-upload'>Click here to select file(s). Maximum file size is 3GB. Maximum file number is 3</label>
                         </Typography>
                         <input id='file-upload' style={{ display: 'none' }} type='file' onChange={userFileHandleChange} name='userFile' multiple='multiple' />
-                        <Button className={classes.uploadButton} variant="outlined" color="primary" data-testid="upload-button" onClick={uploadHandleClick} >upload</Button>
+                        <Button style={{marginTop: '1rem',marginBottom:'1rem'}} className={classes.uploadButton} variant="outlined" color="primary" data-testid="upload-button" onClick={uploadHandleClick} >upload</Button>
                     </form>
                 </div>
             </Paper>

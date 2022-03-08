@@ -64,7 +64,7 @@ function App() {
         </RequireAuth>
         <footer>
           <div>
-            footer
+          <strong>Created by : brucse</strong>
           </div>
         </footer>
       </AuthenticationProvider>

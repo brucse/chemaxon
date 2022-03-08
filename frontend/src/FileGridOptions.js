@@ -8,7 +8,7 @@ function columns({ copyRef, downloadUrl, handleCopyClick, handleDownloadClick, h
     const columns = [
         {
             name: 'id',
-            // options :{display : false}
+            options :{display : false}
 
         },
         {
@@ -59,7 +59,7 @@ function columns({ copyRef, downloadUrl, handleCopyClick, handleDownloadClick, h
                     const fileStoreName = tableMeta.rowData[1]
                     const fileOriginalName = tableMeta.rowData[2]
                     // return (<div onClick={(event) => handleDownloadClick(fileOriginalName, fileStoreName, event)}>download</div>)
-                    return (<DownloadIcon onClick={(event) => handleDownloadClick(fileOriginalName, fileStoreName, event)}/>)
+                    return (<DownloadIcon style={{cursor : 'pointer'}} onClick={(event) => handleDownloadClick(fileOriginalName, fileStoreName, event)}/>)
                 }
             }
         },
@@ -69,7 +69,7 @@ function columns({ copyRef, downloadUrl, handleCopyClick, handleDownloadClick, h
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const fileId = tableMeta.tableData[tableMeta.rowIndex][0]
                     // return (<div onClick={(event) => handleDeleteClick(event, fileId)}>delete</div>)
-                    return (<DeleteIcon onClick={(event) => handleDeleteClick(event, fileId)}/>)
+                        return (<DeleteIcon style={{cursor : 'pointer'}} onClick={(event) => handleDeleteClick(event, fileId)}/>)
                 }
             }
         }

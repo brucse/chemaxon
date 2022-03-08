@@ -28,8 +28,8 @@ const handleSignInClick = (event) =>{
  return (
   <section className={styles.login}>
         {message?<Alert  severity='error'>{message}</Alert>  : null}
-        <TextField size='small' className={styles.loginField} onChange={handleLogin} label="login" variant="outlined" />
-        <TextField type='password' size='small' className={styles.passwordField} onChange={handlePassword}  label="password" variant="outlined" />
+        <TextField inputProps={{ "data-testid": "login" }}  size='small' className={styles.loginField} onChange={handleLogin} label="login" variant="outlined" />
+        <TextField  inputProps={{ "data-testid": "password" }}  type='password' size='small' className={styles.passwordField} onChange={handlePassword}  label="password" variant="outlined" />
         <Button variant="outlined" color="primary" style={{marginTop: '3rem'}} onClick={handleSignInClick}>sign in</Button>
   </section>
   ) 

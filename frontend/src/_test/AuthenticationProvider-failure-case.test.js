@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react'
-import AuthenticationProvider from '../components/AuthenticationProvider'
-import RequireAuth from '../components/RequireAuth'
+import AuthenticationProvider from '../AuthenticationProvider'
+import RequireAuth from '../RequireAuth'
 import userEvent from '@testing-library/user-event'
 import superagent from 'superagent'
 
@@ -25,9 +25,8 @@ describe("<AuthenticationProvider> failure", () => {
             </AuthenticationProvider>
         )
 
-        expect(screen.queryByText('protected')).toBe(null)
-        const login = screen.getByDisplayValue('login')
-        const password = screen.getByDisplayValue('password')
+        const login = screen.getByTestId('login')
+        const password = screen.getByTestId('password')
         userEvent.clear(login)
         userEvent.paste(login, 'user')
         userEvent.clear(password)

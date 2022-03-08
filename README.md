@@ -6,3 +6,4 @@ backend test port already in use , test -- fileList.test.js
 big zip download 0 kb size, direct download out of scope
 alert doesn't show properly
 file size prettier is wrong
+pretty bytes ruins the test

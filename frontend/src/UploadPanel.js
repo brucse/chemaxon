@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@mui/material/LinearProgress';
 import { AuthContext } from './contexts'
+//@pretty-bytes ruins
+//doesn't work in test, please comment it out
 import prettyBytes from 'pretty-bytes';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,11 +27,7 @@ const useStyles = makeStyles((theme) => ({
     uploadText: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
-        // border: 'solid',
-        // borderWidth: '1px',
-        // borderColor: theme.palette.primary.main,
         padding: '3px',
-        // boxSizing: 'border-box'
     },
     fileList: {
         marginTop: theme.spacing(1),
@@ -68,6 +66,9 @@ const FileNames = ({ files, className }) => {
             {files.map(file => (
                     <li style={{border: 'none'}} key={file.name}>
                         <span style={{fontWeight: '600'}}>Name:</span> {file.name} <span style={{fontWeight: '600'}}>Size:</span> {prettyBytes(file.size)} 
+                        {/* @pretty-bytes ruins */}
+                        {/* use this line when run test, prettybytes ruin the tests */}
+                        {/* <span style={{fontWeight: '600'}}>Name:</span> {file.name} <span style={{fontWeight: '600'}}>Size:</span> {file.size}  */}
                     </li>
             ))}
         </ul>

@@ -7,6 +7,7 @@ module.exports = function checkUser(req, res, next) {
     if(userId){
         User.findOne({where :{id: userId}})
         .then((user) =>{
+        console.log('user', user)
            if(user) next()
            else next(new ClientError('No such user'))
         })

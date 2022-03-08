@@ -4,6 +4,9 @@ const User = require("./User")
 sync()
 .then(() => {
     console.log('db synchronized')
+    return User.destroy({where :{}})
+})
+.then(()=>{
     return User.create({login : 'test', password: 'test'})
 })
 .then(() =>{

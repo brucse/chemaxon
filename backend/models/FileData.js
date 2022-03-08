@@ -8,6 +8,7 @@ const FileData = sequelize.define('FileData',{
     },
     fileName: {type:DataTypes.STRING},
     fileOriginalName: {type:DataTypes.STRING},
+    uploadTime : {type : DataTypes.DATE},
     userId : {type : DataTypes.INTEGER}
 }, 
 {

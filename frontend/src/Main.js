@@ -58,7 +58,7 @@ export default () =>{
           <main>
             <Upload refreshGrid={refreshGrid} />
             <section className='fileGrid'>
-              <FileGrid gridData={gridData} error={gridError} />
+              <FileGrid gridData={gridData} error={gridError} refreshGrid={refreshGrid} />
             </section>
           </main>
     )

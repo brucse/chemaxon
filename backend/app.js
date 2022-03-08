@@ -3,6 +3,7 @@ const { errorHandler, ClientError } = require('./ErrorHandler')
 const express = require('express')
 const multer = require('multer')
 const multerStorage = require('./multerSetting')
+const { unlink } = require('fs/promises');
 
 const upload = multer({ storage: multerStorage })
 
@@ -27,7 +28,7 @@ app.post('/upload', checkUser, upload.array('userFile'), function (req, res, nex
         console.log('upload file names', file)
         const promises = []
         file.forEach(f => {
-            promises.push(FileData.create({ fileName: f.filename, fileOriginalName: f.originalname, userId: userId }))
+            promises.push(FileData.create({ fileName: f.filename, fileOriginalName: f.originalname, userId: userId, uploadTime : new Date() }))
         })
 
         Promise.all(promises)
@@ -46,7 +47,7 @@ app.get('/files', checkUser, function (req, res, next) {
     console.log('url', req.get('host'))
     FileData.findAll({ where: { userId: userId } }).
         then(data => {
-            console.log('data', data)
+            // console.log('data', data)
             res.status('200').json({ data: data })
         })
         .catch(e => {
@@ -57,6 +58,7 @@ app.get('/files', checkUser, function (req, res, next) {
 
 
 app.use(express.json())
+
 app.post('/login', (req, res) => {
     console.log('login body', req.body)
     const login = req.body.login
@@ -79,6 +81,34 @@ app.post('/login', (req, res) => {
 
 })
 
+app.delete('/files/:id',checkUser,function(req,res,next){
+    const fileId = req.params.id
+    const userId = req.get('Authorization') 
+    console.log('delete file', fileId, userId)
+    FileData.findOne({where : {id : fileId, userId : userId }})
+    .then(data =>{
+        console.log('file found', data)
+        if(!data){
+            next(new ClientError('No file to delete'))
+        }else{
+            console.log('filename to delete', data.fileName)
+            unlink(`uploads/${data.fileName}`)
+            .then(() =>{
+                return data.destroy()
+            })
+            .catch((e) =>{
+                console.error(e)
+            })
+        }
+    })
+    .then(() =>{
+       res.status('200').send()
+    })
+    .catch(e =>{
+        next(new ClientError('No file to delete'))
+    })
+})
+
 function allowFileDownload(req, res, next) {
     const userId = req.get('Authorization')
     const path = req.path.slice(1)
@@ -95,8 +125,10 @@ function allowFileDownload(req, res, next) {
     }
 }
 
+//if you want to restrict file download
+// app.use('/file', checkUser, allowFileDownload, express.static('uploads'))
+app.use('/file', express.static('uploads'))
 
-app.use('/file', checkUser, allowFileDownload, express.static('uploads'))
 app.use(errorHandler)
 
 const port = process.env.APP_PORT

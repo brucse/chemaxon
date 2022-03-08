@@ -9,7 +9,7 @@ class ClientError extends Error{
 
 function errorHandler(err,req,res,next){
     //@todo: use real logger instead
-    console.error(err)
+    console.error('error handler',err)
     if(err instanceof ClientError){
         res.status('400').send(err.message)
     }else if(err instanceof multer.MulterError){

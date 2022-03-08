@@ -1,12 +1,14 @@
-import react, { useState, useRef, useEffect } from 'react'
+import react, { useState, useRef, useEffect, useContext } from 'react'
 import MUIDataTable from "mui-datatables";
 import superagent, { options } from 'superagent'
 import LinearProgress from '@mui/material/LinearProgress';
+import { AuthContext } from './contexts';
 
-const FileGrid = ({ gridData }) => {
+const FileGrid = ({ gridData,error, refreshGrid }) => {
 
     const [downloading,setDownloading] = useState(false)
     const [progress, setProgress] = useState(0)
+    const context = useContext(AuthContext)
 
     const downloadUrl = `${process.env.REACT_APP_REST_URL}/file`
 
@@ -15,6 +17,7 @@ const FileGrid = ({ gridData }) => {
 
         superagent
             .get(`${process.env.REACT_APP_REST_URL}/file/${fileStoreName}`)
+            .set('Authorization', context.userId)
             .on('progress', event => {
                 console.log('progress', event.percent)
                 setDownloading(true)
@@ -42,7 +45,14 @@ const FileGrid = ({ gridData }) => {
 
     const columns = [
         {
-            name: '' //id
+            name: '', //id
+            options :{
+                customBodyRender: (value, tableMeta, updateValue) => {
+                console.log('tablemeta x', tableMeta)
+                return tableMeta.rowIndex  + 1
+                }
+
+            }
         },
         {
             name: 'File',
@@ -64,12 +74,15 @@ const FileGrid = ({ gridData }) => {
         }
         ];
 
-    
+    useEffect(() =>{
+        // refreshGrid()
+    },[])
 
     return (
         <>
+            {error && error}
             {downloading? <div><span style={{fontWeight: '500'}}>Download in progress</span><LinearProgress variant='determinate' value={progress}/></div> :null}
-            {!gridData ? <LinearProgress/> :
+            {!gridData  && !error ? <LinearProgress/> :
                 <MUIDataTable
                     title={"Files"}
                     data={gridData}

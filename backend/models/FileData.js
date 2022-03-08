@@ -7,7 +7,8 @@ const FileData = sequelize.define('FileData',{
         primaryKey : true 
     },
     fileName: {type:DataTypes.STRING},
-    fileOriginalName: {type:DataTypes.STRING}
+    fileOriginalName: {type:DataTypes.STRING},
+    userId : {type : DataTypes.INTEGER}
 }, 
 {
     tableName : 'file_data',

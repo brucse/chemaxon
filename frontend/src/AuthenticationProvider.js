@@ -32,10 +32,10 @@ const AuthenticationProvider = ({children}) =>{
 
     let userId = id
     // webpack removes it from production code
-    if(process.env.NODE_ENV === 'development'){
-        userId = process.env.REACT_APP_TEST_USER_ID?process.env.REACT_APP_TEST_USER_ID:id
-        console.log('user id set to develpment value:', userId)
-    }
+    // if(process.env.NODE_ENV === 'development'){
+    //     userId = process.env.REACT_APP_TEST_USER_ID?process.env.REACT_APP_TEST_USER_ID:id
+    //     console.log('user id set to develpment value:', userId)
+    // }
     
     return(
         <AuthContext.Provider value={{userId : userId,login: login, signIn, signOut,message: message}}>

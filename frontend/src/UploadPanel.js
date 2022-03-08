@@ -1,4 +1,4 @@
-import react, { useState, useRef, useEffect } from 'react'
+import react, { useState, useRef, useEffect, useContext } from 'react'
 import superagent from 'superagent'
 import './Upload.scss'
 import Button from '@material-ui/core/Button'
@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@mui/material/LinearProgress';
+import { AuthContext } from './contexts'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,6 +84,7 @@ export default  ({ setUploadStatus, setShowUpload, refreshGrid }) => {
     const [selectStatus, setSelectStatus] = useState()
     const [files, setFiles] = useState()
     const [progress, setProgress] = useState(0)
+    const context = useContext(AuthContext)
 
     const classes = useStyles();
 
@@ -124,6 +126,7 @@ export default  ({ setUploadStatus, setShowUpload, refreshGrid }) => {
                 console.log('progress upload', event.percent)
                 setProgress(event.percent)
             })
+            .set('Authorization', context.userId )
             .send(formData)
             .then(res => {
                 console.log('res', res)

@@ -7,6 +7,9 @@ sync()
     return User.create({login : 'test', password: 'test'})
 })
 .then(() =>{
+    return User.create({login : 'test2', password: 'test'})
+})
+.then(() =>{
     console.log('test user created')
 }).catch((e) => {
     console.error('db synchronization error', e)

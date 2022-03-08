@@ -1,4 +1,4 @@
-import './App.scss';
+
 import { AuthContext } from './contexts';
 import Upload from './Upload'
 import FileGrid from './FileGrid'
@@ -7,8 +7,6 @@ import react, { useState, useRef, useEffect, useContext } from 'react'
 import Header from './Header'
 import RequireAuth from './RequireAuth';
 import AuthenticationProvider from './AuthenticationProvider';
-import Main from './Main';
-
 
 const convertToGridData = (data) => {
   return data.map(obj => {
@@ -20,14 +18,11 @@ const convertToGridData = (data) => {
   })
 }
 
-
-
-function App() {
+export default () =>{
 
   const [gridData, setGridData] = useState()
   const [gridError, setGridError] = useState()
   const context = useContext(AuthContext)
-
 
   const fetchGridData = () => {
     superagent
@@ -55,21 +50,16 @@ function App() {
     fetchGridData()
   }
 
-  return (
-    <>
-      <AuthenticationProvider>
-        <Header />
-        <RequireAuth>
-        <Main/>
-        </RequireAuth>
-        <footer>
-          <div>
-            footer
-          </div>
-        </footer>
-      </AuthenticationProvider>
-    </>
-  );
-}
 
-export default App;
+
+
+
+    return(
+          <main>
+            <Upload refreshGrid={refreshGrid} />
+            <section className='fileGrid'>
+              <FileGrid gridData={gridData} error={gridError} />
+            </section>
+          </main>
+    )
+}

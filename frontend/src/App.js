@@ -4,6 +4,8 @@ import FileGrid from './FileGrid'
 import superagent from 'superagent'
 import react, { useState, useRef, useEffect } from 'react'
 import Header from './Header'
+import AuthenticationProvider from './AuthenticationProvider';
+import RequireAuth from './RequireAuth';
 
 
 const convertToGridData = (data) => {
@@ -48,18 +50,22 @@ function App() {
 
   return (
     <>
+    <AuthenticationProvider>
       <Header/>
+    <RequireAuth>
       <main>
           <Upload refreshGrid={refreshGrid} />
         <section className='fileGrid'>
           <FileGrid gridData={gridData} />
         </section>
       </main>
+    </RequireAuth>
       <footer>
         <div>
           footer
         </div>
       </footer>
+    </AuthenticationProvider>
     </>
   );
 }

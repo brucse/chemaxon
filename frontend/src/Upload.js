@@ -41,14 +41,6 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
-
-
-
-
-
-
-
-
 export default function Upload({ refreshGrid }) {
 
     const [showUpload, setShowUpload] = useState(false)

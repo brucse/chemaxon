@@ -11,6 +11,7 @@ const upload = multer({storage : multerStorage})
 const cors = require('cors')
 
 const FileData = require('./models/FileData')
+const User = require('./models/User')
 
 
 const app = express()
@@ -64,6 +65,28 @@ function checkUser(req, res, next) {
     //     })
     next()
 }
+app.use(express.json())
+app.post('/login', (req,res) =>{
+    console.log('login body',req.body)
+    const login = req.body.login
+    const password = req.body.password
+    if(login && password){
+        User.findOne({where : {login:login,password : password}})
+        .then(data =>{
+            if(data){
+                res.json({id:data.id})
+            }else{
+                res.status(400).json({message:'login failed'})
+            }
+        }).catch(e =>{
+            console.error(e)
+            
+        })
+    }else{
+        res.status(400).json({message:'login failed'})
+    }
+
+})
 
 app.use('/file', checkUser, express.static('uploads'))
 app.use(errorHandler)

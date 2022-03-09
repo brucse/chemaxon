@@ -58,5 +58,5 @@ npm test -- fileList.test.js
 ### frontend
 The direct download doesn't work properly. The downloaded file is ruined. Probably the buffer conversion or the file extension handling is wrong
 
-I used [pretty bytes](https://www.npmjs.com/package/pretty-bytes) make the upload file size human readeable, but the calculation is wrong. I also ruins the test, please check the source code in: `Upload.test.js`
+I used [pretty bytes](https://www.npmjs.com/package/pretty-bytes) make the upload file size human readeble, but the calculation is wrong. I also ruins the test, please check the source code in: `Upload.test.js`
 
